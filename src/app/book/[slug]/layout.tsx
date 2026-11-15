@@ -18,9 +18,12 @@ export default async function BookLayout({ children, params }: { children: React
       <header className={dark ? "bg-pine text-on-pine" : "border-b border-line bg-surface text-ink"}>
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link href={`/book/${slug}`} className="font-heading text-xl">
-            {logo ? <img src={logo} alt={property.name} className="h-14 w-auto max-w-[60vw] object-contain object-left" /> : property.name}
+            {logo ? <img src={logo} alt={property.name} className="h-12 w-auto max-w-[40vw] object-contain object-left sm:h-14" /> : property.name}
           </Link>
-          <Link href={`/book/${slug}/manage`} className="font-label text-xs tracking-wide uppercase opacity-90 hover:opacity-100">Manage my reservation</Link>
+          <nav className="flex shrink-0 items-center gap-3 font-label text-[11px] tracking-wide whitespace-nowrap uppercase sm:gap-5 sm:text-xs">
+            <Link href={`/book/${slug}/manage`} className="opacity-90 hover:opacity-100"><span className="hidden sm:inline">Manage my reservation</span><span className="sm:hidden">My booking</span></Link>
+            <Link href="/admin" className="rounded-md border border-current px-2.5 py-1 opacity-80 hover:opacity-100">Staff<span className="hidden sm:inline"> sign in</span></Link>
+          </nav>
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-8">{children}</main>
