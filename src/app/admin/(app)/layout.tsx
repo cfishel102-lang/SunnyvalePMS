@@ -5,7 +5,7 @@ import { logoutAction } from "../actions";
 
 const NAV = [
   ["/admin", "Dashboard"],
-  ["/admin/calendar", "Calendar"],
+  ["/admin/calendar", "Booking chart"],
   ["/admin/reservations", "Reservations"],
   ["/admin/sites", "Sites"],
   ["/admin/map", "Map"],
