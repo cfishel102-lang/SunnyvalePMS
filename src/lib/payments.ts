@@ -2,11 +2,11 @@ import Stripe from "stripe";
 import { db } from "./db";
 import { paidTotal, BookingError } from "./reservations";
 import { round2 } from "./format";
+import { APP_URL } from "./url";
 
 const key = process.env.STRIPE_SECRET_KEY;
 export const stripe = key ? new Stripe(key) : null;
 export const paymentsLive = Boolean(stripe);
-const APP_URL = process.env.APP_URL ?? "http://localhost:3000";
 
 /**
  * Take payment for a new online booking and return the URL to send the guest to.
@@ -15,11 +15,12 @@ const APP_URL = process.env.APP_URL ?? "http://localhost:3000";
  */
 export async function startCheckout(reservationId: string): Promise<string> {
   const r = await db.reservation.findUniqueOrThrow({ where: { id: reservationId }, include: { property: true, site: true, guest: true } });
-  const done = `${APP_URL}/book/${r.property.slug}/confirmation/${r.code}`;
+  const path = `/book/${r.property.slug}/confirmation/${r.code}`;
+  const done = APP_URL + path;
   if (!stripe) {
     await db.payment.create({ data: { reservationId: r.id, amount: r.total, method: "Demo card", note: "Demo mode: no real charge" } });
     await db.reservation.update({ where: { id: r.id }, data: { holdExpiresAt: null } });
-    return done;
+    return path;
   }
   const session = await stripe.checkout.sessions.create({
     mode: "payment",

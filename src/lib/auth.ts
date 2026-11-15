@@ -4,11 +4,18 @@ import { SignJWT, jwtVerify } from "jose";
 import { createHash, randomBytes } from "crypto";
 import { db } from "./db";
 
-const secret = new TextEncoder().encode(process.env.AUTH_SECRET ?? "dev-only-secret");
+function key() {
+  const s = process.env.AUTH_SECRET;
+  // Online, sign-in must be protected by a private secret, never the sample one.
+  if (process.env.NODE_ENV === "production" && process.env.VERCEL && (!s || s.startsWith("dev-only"))) {
+    throw new Error("AUTH_SECRET is not set. Add it in the project's environment variables.");
+  }
+  return new TextEncoder().encode(s ?? "dev-only-secret");
+}
 const COOKIE = "session";
 
 export async function signIn(userId: string) {
-  const token = await new SignJWT({ sub: userId }).setProtectedHeader({ alg: "HS256" }).setExpirationTime("14d").sign(secret);
+  const token = await new SignJWT({ sub: userId }).setProtectedHeader({ alg: "HS256" }).setExpirationTime("14d").sign(key());
   (await cookies()).set(COOKIE, token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 14 * 86400 });
 }
 export async function signOut() {
@@ -19,7 +26,7 @@ export async function currentUser() {
   const token = (await cookies()).get(COOKIE)?.value;
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, key());
     return await db.user.findUnique({ where: { id: String(payload.sub) }, include: { organization: true } });
   } catch {
     return null;

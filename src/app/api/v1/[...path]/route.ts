@@ -33,7 +33,7 @@ function openapi(origin: string) {
 async function handle(req: Request, ctx: { params: Promise<{ path: string[] }> }) {
   const { path } = await ctx.params;
   const url = new URL(req.url);
-  if (path.join("/") === "openapi.json") return json(openapi(process.env.APP_URL ?? url.origin));
+  if (path.join("/") === "openapi.json") return json(openapi(process.env.APP_URL || url.origin));
 
   const orgId = await orgFromRequest(req);
   if (!orgId) return json({ error: "Send your API key as: Authorization: Bearer <key>" }, 401);

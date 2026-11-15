@@ -11,7 +11,7 @@ Cloud reservation software for RV parks and campgrounds. First property: **RV at
 | Open API | `/api/v1` | Availability, reservations and reports for other systems. Description at `/api/v1/openapi.json`. |
 | MCP server | `/api/mcp` | The same operations for AI assistants. |
 
-Sample staff login: `owner@example.com` / `campground`. **Change this before real use.**
+Local staff login: `owner@example.com` / `campground`. Online, the login comes from `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
 
 The site list comes from the real park map (`prisma/maps`). Rates, tax rate and reservations are placeholder sample data (`prisma/seed.ts`). Site lengths are not entered yet.
 
@@ -34,6 +34,16 @@ npm run build && npm start  # http://localhost:3000
 ```
 
 Payments run in demo mode (no real charges) until `STRIPE_SECRET_KEY` is set in `.env`.
+
+## Putting it online (Vercel)
+
+1. In Vercel, import this GitHub repository as a new project. Before deploying, add these environment variables:
+   - `AUTH_SECRET`: any long random text (40+ characters). Keeps staff sign-in secure.
+   - `ADMIN_EMAIL` and `ADMIN_PASSWORD`: the first staff login.
+2. In the project's **Storage** tab, add a Postgres database (Neon) and connect it to the project.
+3. Deploy (or redeploy). The build creates the tables and, on a new database only, loads RV at Olympic with sample reservations.
+
+Every later push to `main` redeploys automatically and never overwrites existing data.
 
 ## How the code is organised
 

@@ -25,7 +25,8 @@ async function main() {
 
   const org = await db.organization.create({ data: { name: "My Campgrounds", slug: "my-campgrounds" } });
   await db.user.create({
-    data: { organizationId: org.id, email: "owner@example.com", name: "Owner", passwordHash: await bcrypt.hash("campground", 10) },
+    // Set ADMIN_EMAIL and ADMIN_PASSWORD before the first deploy; the fallback is for local testing only.
+    data: { organizationId: org.id, email: (process.env.ADMIN_EMAIL || "owner@example.com").toLowerCase(), name: "Owner", passwordHash: await bcrypt.hash(process.env.ADMIN_PASSWORD || "campground", 10) },
   });
 
   const now = today();

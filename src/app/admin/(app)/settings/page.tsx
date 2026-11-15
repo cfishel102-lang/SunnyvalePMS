@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { fmtDate } from "@/lib/dates";
 import { SOURCE_LABEL } from "@/lib/format";
 import { paymentsLive } from "@/lib/payments";
+import { APP_URL } from "@/lib/url";
 import { createKeyAction, revokeKeyAction } from "../../actions";
 
 const Pill = ({ on, children }: { on: boolean; children: React.ReactNode }) => (
@@ -18,7 +19,7 @@ export default async function Settings({ searchParams }: { searchParams: Promise
     db.apiKey.findMany({ where: { organizationId: user.organizationId }, orderBy: { createdAt: "desc" } }),
     db.channel.findMany({ where: { propertyId: property.id }, orderBy: { source: "asc" } }),
   ]);
-  const base = process.env.APP_URL ?? "http://localhost:3000";
+  const base = APP_URL;
 
   return (
     <div className="max-w-3xl space-y-4">
