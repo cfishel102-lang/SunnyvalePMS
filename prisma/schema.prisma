@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// An Organization is one customer of the software (a management company).
+// Everything else hangs off it, so many companies can share one deployment.
+model Organization {
+  id         String     @id @default(cuid())
+  name       String
+  slug       String     @unique
+  createdAt  DateTime   @default(now())
+  users      User[]
+  properties Property[]
+  guests     Guest[]
+  apiKeys    ApiKey[]
+}
+
+model User {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  email          String       @unique
+  name           String
+  passwordHash   String
+  role           String       @default("admin")
+  createdAt      DateTime     @default(now())
+}
+
+model Property {
+  id                String       @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id])
+  name              String
+  slug              String       @unique
+  tagline           String       @default("")
+  timezone          String       @default("America/Los_Angeles")
+  checkInTime       String       @default("2:00 PM")
+  checkOutTime      String       @default("11:00 AM")
+  taxRatePct        Decimal      @default(0) @db.Decimal(5, 2)
+  taxLongTerm       Boolean      @default(false)
+  longTermMinNights Int          @default(28)
+  weeklyDiscountPct Decimal      @default(0) @db.Decimal(5, 2)
+  weekendUpliftPct  Decimal      @default(0) @db.Decimal(5, 2)
+  dynamicPricing    Boolean      @default(true)
+  // Free cancellation up to this many days before arrival.
+  cancelWindowDays  Int          @default(3)
+  createdAt         DateTime     @default(now())
+  siteClasses       SiteClass[]
+  sites             Site[]
+  seasons           Season[]
+  pricingRules      PricingRule[]
+  reservations      Reservation[]
+  channels          Channel[]
+}
+
+// A rate category, e.g. "Pull-Through Full Hookup". Sites in a class share pricing.
+model SiteClass {
+  id          String   @id @default(cuid())
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id])
+  name        String
+  description String   @default("")
+  nightlyRate Decimal  @db.Decimal(10, 2)
+  monthlyRate Decimal  @db.Decimal(10, 2)
+  // Dynamic pricing never goes below minRate or above maxRate.
+  minRate     Decimal  @db.Decimal(10, 2)
+  maxRate     Decimal  @db.Decimal(10, 2)
+  sortOrder   Int      @default(0)
+  sites       Site[]
+}
+
+enum AccessType {
+  BACK_IN
+  PULL_THROUGH
+}
+
+model Site {
+  id             String        @id @default(cuid())
+  propertyId     String
+  property       Property      @relation(fields: [propertyId], references: [id])
+  siteClassId    String
+  siteClass      SiteClass     @relation(fields: [siteClassId], references: [id])
+  name           String
+  lengthFt       Int
+  accessType     AccessType
+  amps           Int           @default(50)
+  hookups        String        @default("Full")
+  allowShortTerm Boolean       @default(true)
+  allowLongTerm  Boolean       @default(true)
+  active         Boolean       @default(true)
+  // Position on the park map (0-100, percent of image). Filled in by map upload.
+  mapX           Float?
+  mapY           Float?
+  reservations   Reservation[]
+
+  @@unique([propertyId, name])
+}
+
+model Season {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  name       String
+  startDate  DateTime @db.Date
+  endDate    DateTime @db.Date
+  adjustPct  Decimal  @db.Decimal(6, 2)
+}
+
+// "When the park is at least X% full on a night, raise that night's rate by Y%."
+model PricingRule {
+  id           String   @id @default(cuid())
+  propertyId   String
+  property     Property @relation(fields: [propertyId], references: [id])
+  occupancyPct Int
+  adjustPct    Decimal  @db.Decimal(6, 2)
+}
+
+model Guest {
+  id             String        @id @default(cuid())
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  firstName      String
+  lastName       String
+  email          String
+  phone          String        @default("")
+  createdAt      DateTime      @default(now())
+  reservations   Reservation[]
+
+  @@unique([organizationId, email])
+}
+
+enum ReservationStatus {
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+}
+
+enum StayType {
+  TRANSIENT
+  LONG_TERM
+}
+
+enum Source {
+  WEBSITE
+  STAFF
+  API
+  EXPEDIA
+  BOOKING_COM
+  AIRBNB
+}
+
+model Reservation {
+  id          String            @id @default(cuid())
+  code        String            @unique
+  propertyId  String
+  property    Property          @relation(fields: [propertyId], references: [id])
+  siteId      String
+  site        Site              @relation(fields: [siteId], references: [id])
+  guestId     String
+  guest       Guest             @relation(fields: [guestId], references: [id])
+  checkIn     DateTime          @db.Date
+  checkOut    DateTime          @db.Date
+  nights      Int
+  stayType    StayType
+  status      ReservationStatus @default(CONFIRMED)
+  source      Source            @default(WEBSITE)
+  adults      Int               @default(2)
+  children    Int               @default(0)
+  rigType     String            @default("")
+  rigLengthFt Int?
+  subtotal    Decimal           @db.Decimal(10, 2)
+  tax         Decimal           @db.Decimal(10, 2)
+  total       Decimal           @db.Decimal(10, 2)
+  notes       String            @default("")
+  createdAt   DateTime          @default(now())
+  cancelledAt DateTime?
+  // Unpaid online bookings hold the site until this time, then are released.
+  holdExpiresAt DateTime?
+  payments    Payment[]
+
+  @@index([propertyId, checkIn, checkOut])
+  @@index([siteId, checkIn, checkOut])
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  // Positive for charges, negative for refunds.
+  amount        Decimal     @db.Decimal(10, 2)
+  method        String
+  stripeId      String?     @unique
+  note          String      @default("")
+  createdAt     DateTime    @default(now())
+}
+
+model ApiKey {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  prefix         String
+  keyHash        String       @unique
+  lastUsedAt     DateTime?
+  createdAt      DateTime     @default(now())
+}
+
+// A sales channel (OTA). icalImportUrl pulls their bookings in as blocks;
+// exportToken lets them read our availability calendar.
+model Channel {
+  id            String    @id @default(cuid())
+  propertyId    String
+  property      Property  @relation(fields: [propertyId], references: [id])
+  source        Source
+  enabled       Boolean   @default(false)
+  icalImportUrl String    @default("")
+  exportToken   String    @unique
+  lastSyncAt    DateTime?
+  lastSyncNote  String    @default("")
+
+  @@unique([propertyId, source])
+}
