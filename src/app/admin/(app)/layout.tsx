@@ -7,6 +7,7 @@ const NAV = [
   ["/admin/calendar", "Calendar"],
   ["/admin/reservations", "Reservations"],
   ["/admin/sites", "Sites"],
+  ["/admin/map", "Map"],
   ["/admin/pricing", "Pricing"],
   ["/admin/reports", "Reports"],
   ["/admin/settings", "Settings"],
@@ -14,11 +15,12 @@ const NAV = [
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, property } = await requireStaff();
+  const logo = (property.brand as { logo?: string } | null)?.logo;
   return (
     <div className="min-h-screen md:flex">
       <aside className="border-b border-line bg-surface md:sticky md:top-0 md:h-screen md:w-52 md:shrink-0 md:border-r md:border-b-0">
         <div className="px-5 pt-5 pb-3">
-          <p className="font-semibold tracking-tight">{property.name}</p>
+          {logo ? <img src={logo} alt={property.name} className="mb-1 h-16 w-auto" /> : <p className="font-heading text-lg">{property.name}</p>}
           <p className="text-xs text-muted">{user.organization.name}</p>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:block md:space-y-0.5">

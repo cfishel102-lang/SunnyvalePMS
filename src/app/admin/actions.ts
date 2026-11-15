@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { createApiKey, requireStaff, signIn, signOut } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { isDateStr, toDate } from "@/lib/dates";
+import { applyMapAnalysis, MapAnalysisSchema, readMap, type TypeSettings } from "@/lib/mapImport";
 import { refund } from "@/lib/payments";
 import { BookingError, cancelReservation, changeReservation, createReservation } from "@/lib/reservations";
 
@@ -119,11 +120,11 @@ export async function notesAction(form: FormData) {
 
 function siteData(form: FormData) {
   if (!s(form, "name")) throw new BookingError("A site needs a name or number.");
-  if (!(n(form, "lengthFt") > 0)) throw new BookingError("Enter the site length in feet.");
   return {
     name: s(form, "name"),
     siteClassId: s(form, "siteClassId"),
-    lengthFt: n(form, "lengthFt"),
+    lengthFt: n(form, "lengthFt") > 0 ? Math.round(n(form, "lengthFt")) : null,
+    accessible: form.has("accessible"),
     accessType: s(form, "accessType") === "PULL_THROUGH" ? ("PULL_THROUGH" as const) : ("BACK_IN" as const),
     amps: n(form, "amps") || 50,
     hookups: s(form, "hookups") || "Full",
@@ -198,6 +199,51 @@ export async function deleteSeasonAction(form: FormData) {
   const { property } = await requireStaff();
   await db.season.deleteMany({ where: { id: s(form, "id"), propertyId: property.id } });
   redirect("/admin/pricing?notice=Season+removed.");
+}
+
+/** Set the same length on every site of one type that has no length yet (or on all of them). */
+export async function bulkLengthAction(form: FormData) {
+  const { property } = await requireStaff();
+  await run("/admin/sites", "Lengths updated.", async () => {
+    const len = Math.round(n(form, "lengthFt"));
+    if (!(len > 0)) throw new BookingError("Enter a length in feet.");
+    await db.site.updateMany({
+      where: { propertyId: property.id, siteClassId: s(form, "siteClassId"), ...(form.has("overwrite") ? {} : { lengthFt: null }) },
+      data: { lengthFt: len },
+    });
+  });
+}
+
+// ---- Map ----
+
+/** Read (or re-read) the uploaded map. */
+export async function readMapAction() {
+  const { property } = await requireStaff();
+  await run("/admin/map", "Map read. Review the sites below.", async () => {
+    const map = await db.propertyMap.findUnique({ where: { propertyId: property.id } });
+    if (!map) throw new BookingError("Upload a map first.");
+    const analysis = await readMap(Buffer.from(map.data), map.mime);
+    await db.propertyMap.update({ where: { id: map.id }, data: { analysis, appliedAt: null } });
+  });
+}
+
+/** Create the sites from the reviewed map. */
+export async function applyMapAction(form: FormData) {
+  const { property } = await requireStaff();
+  await run("/admin/map", "Sites imported from the map.", async () => {
+    const map = await db.propertyMap.findUnique({ where: { propertyId: property.id } });
+    const analysis = MapAnalysisSchema.safeParse(map?.analysis);
+    if (!analysis.success) throw new BookingError("The map has not been read yet.");
+    const settings: Record<string, TypeSettings> = {};
+    for (const t of analysis.data.siteTypes) {
+      const g = (k: string) => n(form, `${t.key}.${k}`);
+      settings[t.key] = {
+        name: s(form, `${t.key}.name`), nightlyRate: g("nightlyRate"), monthlyRate: g("monthlyRate"), minRate: g("minRate"), maxRate: g("maxRate"),
+        lengthFt: g("lengthFt") > 0 ? Math.round(g("lengthFt")) : null, bookable: form.has(`${t.key}.bookable`),
+      };
+    }
+    await applyMapAnalysis(property.id, analysis.data, settings);
+  });
 }
 
 // ---- Settings ----

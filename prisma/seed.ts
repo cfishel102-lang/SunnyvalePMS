@@ -1,9 +1,11 @@
-// Sets up RV at Olympic with PLACEHOLDER sites, rates and sample reservations
+// Sets up RV at Olympic from its park map (prisma/maps), with PLACEHOLDER rates and sample reservations
 // so every screen has something to show. Run `npm run seed` to reset to this state.
 import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
 import { db } from "../src/lib/db";
 import { addDays, nightsBetween, toDate, today } from "../src/lib/dates";
+import { readFileSync } from "fs";
+import { applyMapAnalysis, MapAnalysisSchema } from "../src/lib/mapImport";
 import { quoteStay } from "../src/lib/pricing";
 
 let seed = 42;
@@ -17,7 +19,7 @@ const RIGS = ["Class A", "Class C", "Fifth wheel", "Travel trailer", "Camper van
 const SOURCES = [..."WWWWWWWWWW".split("").map(() => "WEBSITE"), ...Array(5).fill("STAFF"), "EXPEDIA", "EXPEDIA", "BOOKING_COM", "BOOKING_COM", "AIRBNB", "API"] as const;
 
 async function main() {
-  for (const t of ["Payment", "Reservation", "Guest", "Channel", "PricingRule", "Season", "Site", "SiteClass", "Property", "ApiKey", "User", "Organization"]) {
+  for (const t of ["Payment", "Reservation", "Guest", "Channel", "PricingRule", "Season", "Site", "SiteClass", "PropertyMap", "Property", "ApiKey", "User", "Organization"]) {
     await db.$executeRawUnsafe(`DELETE FROM "${t}"`);
   }
 
@@ -35,6 +37,7 @@ async function main() {
       slug: "rv-at-olympic",
       tagline: "Full-hookup RV sites for a night, a week, or the season.",
       taxRatePct: 8.5,
+      brand: { logo: "/brand/rv-at-olympic-logo-olive.png", logoOnDark: "/brand/rv-at-olympic-logo-sage.png", mark: "/brand/rv-at-olympic-mark-olive.png" },
       weeklyDiscountPct: 10,
       weekendUpliftPct: 10,
       seasons: {
@@ -52,35 +55,24 @@ async function main() {
     include: { seasons: true, pricingRules: true },
   });
 
-  const classes = [
-    { name: "Premium Pull-Through", description: "Our longest sites. Full hookups, 50 amp, easy in and out for big rigs.", nightlyRate: 79, monthlyRate: 1150, minRate: 59, maxRate: 129, count: 8, len: [65, 75], access: "PULL_THROUGH", amps: 50, hookups: "Full", longFrom: 5 },
-    { name: "Standard Pull-Through", description: "Full hookups and 50 amp service with pull-through access.", nightlyRate: 69, monthlyRate: 1050, minRate: 49, maxRate: 109, count: 12, len: [50, 60], access: "PULL_THROUGH", amps: 50, hookups: "Full", longFrom: 1 },
-    { name: "Back-In Full Hookup", description: "Full hookups on a quieter back-in site.", nightlyRate: 59, monthlyRate: 950, minRate: 45, maxRate: 95, count: 14, len: [35, 45], access: "BACK_IN", amps: 50, hookups: "Full", longFrom: 1 },
-    { name: "Back-In Water & Electric", description: "Water and 30 amp electric. Great value for smaller rigs.", nightlyRate: 49, monthlyRate: 850, minRate: 39, maxRate: 79, count: 8, len: [28, 35], access: "BACK_IN", amps: 30, hookups: "Water & electric", longFrom: 1 },
-  ] as const;
-
-  let num = 1;
-  const sites: { id: string; cls: Awaited<ReturnType<typeof db.siteClass.create>>; allowLongTerm: boolean }[] = [];
-  for (const [i, c] of classes.entries()) {
-    const cls = await db.siteClass.create({
-      data: { propertyId: property.id, name: c.name, description: c.description, nightlyRate: c.nightlyRate, monthlyRate: c.monthlyRate, minRate: c.minRate, maxRate: c.maxRate, sortOrder: i },
-    });
-    for (let k = 1; k <= c.count; k++) {
-      const allowLongTerm = k >= c.longFrom;
-      const s = await db.site.create({
-        data: {
-          propertyId: property.id, siteClassId: cls.id, name: String(num++),
-          lengthFt: Math.round((c.len[0] + ((c.len[1] - c.len[0]) * (k - 1)) / (c.count - 1)) / 5) * 5,
-          accessType: c.access, amps: c.amps, hookups: c.hookups, allowLongTerm,
-        },
-      });
-      sites.push({ id: s.id, cls, allowLongTerm });
-    }
-  }
+  // The real site list, read from the park map. Rates below are placeholders.
+  const analysis = MapAnalysisSchema.parse(JSON.parse(readFileSync("prisma/maps/rv-at-olympic.json", "utf8")));
+  await db.propertyMap.create({ data: { propertyId: property.id, mime: "image/jpeg", data: readFileSync("prisma/maps/rv-at-olympic.jpg"), analysis } });
+  const rate = (nightlyRate: number, monthlyRate: number, minRate: number, maxRate: number, bookable = true) => ({ nightlyRate, monthlyRate, minRate, maxRate, bookable, lengthFt: null });
+  await applyMapAnalysis(property.id, analysis, {
+    partial: { name: "Partial Hook Up", ...rate(49, 850, 39, 79) },
+    standard: { name: "Standard Back-In", ...rate(59, 950, 45, 95) },
+    plus: { name: "Standard + Back-In", ...rate(65, 1000, 49, 105) },
+    comfort: { name: "Comfort Back-In", ...rate(72, 1100, 55, 119) },
+    rental: { name: "Private RV Rentals", ...rate(0, 0, 0, 0, false) },
+  });
+  const sites = (await db.site.findMany({ where: { propertyId: property.id, active: true }, include: { siteClass: true } }))
+    .sort((a, b) => Number(a.name) - Number(b.name))
+    .map((x) => ({ id: x.id, cls: x.siteClass, allowLongTerm: true }));
 
   // Sample guests and reservations: busy transient summer, long-term stays in the off-season.
   const guests = [];
-  for (let i = 0; i < 160; i++) {
+  for (let i = 0; i < 300; i++) {
     const firstName = pick(FIRST), lastName = pick(LAST);
     guests.push(await db.guest.create({
       data: { organizationId: org.id, firstName, lastName, email: `${firstName}.${lastName}${i}@example.com`.toLowerCase(), phone: `(555) 01${int(10, 99)}-${int(1000, 9999)}` },
@@ -96,7 +88,7 @@ async function main() {
       const month = Number(d.slice(5, 7));
       const offSeason = month >= 10 || month <= 3;
       const peak = month >= 6 && month <= 9;
-      const longTerm = offSeason && site.allowLongTerm && si % 5 < 3;
+      const longTerm = offSeason && site.allowLongTerm && si % 5 < 2;
       const len = longTerm ? pick([30, 30, 60, 90]) : pick([1, 2, 2, 3, 3, 4, 5, 7]);
       const out = addDays(d, len);
       const future = nightsBetween(now, d);

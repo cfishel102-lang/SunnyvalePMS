@@ -125,12 +125,13 @@ export async function availableSites(propertyId: string, checkIn: string, checkO
   await releaseExpiredHolds();
   const property = await db.property.findUniqueOrThrow({ where: { id: propertyId } });
   const longTerm = nightsBetween(checkIn, checkOut) >= property.longTermMinNights;
-  return db.site.findMany({
+  const sites = await db.site.findMany({
     where: {
       propertyId,
       active: true,
       ...(longTerm ? { allowLongTerm: true } : { allowShortTerm: true }),
-      ...(f.rigLengthFt ? { lengthFt: { gte: f.rigLengthFt } } : {}),
+      // A site with no length entered yet is not filtered out.
+      ...(f.rigLengthFt ? { OR: [{ lengthFt: { gte: f.rigLengthFt } }, { lengthFt: null }] } : {}),
       ...(f.accessType ? { accessType: f.accessType } : {}),
       reservations: {
         none: {
@@ -142,8 +143,8 @@ export async function availableSites(propertyId: string, checkIn: string, checkO
       },
     },
     include: { siteClass: true },
-    orderBy: [{ lengthFt: "asc" }, { name: "asc" }],
   });
+  return sites.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 }
 
 /** Availability grouped by site class with a price for each: what the booking page shows. */

@@ -41,7 +41,7 @@ export default async function ReservationPage({ params, searchParams }: { params
       <div className="grid gap-4 md:grid-cols-[1fr_20rem]">
         <div className="space-y-4">
           <div className="card grid grid-cols-2 gap-x-6 gap-y-3 p-5 text-sm sm:grid-cols-4">
-            <div><p className="label">Site</p><p className="text-lg font-semibold">{r.site.name}</p><p className="text-xs text-muted">{ACCESS_LABEL[r.site.accessType]} · {r.site.lengthFt} ft</p></div>
+            <div><p className="label">Site</p><p className="text-lg font-semibold">{r.site.name}</p><p className="text-xs text-muted">{ACCESS_LABEL[r.site.accessType]}{r.site.lengthFt ? ` · ${r.site.lengthFt} ft` : ""}</p></div>
             <div><p className="label">Arrive</p><p className="font-medium">{fmtShort(r.checkIn)}</p><p className="text-xs text-muted">{fmtDate(r.checkIn, { year: "numeric" })}</p></div>
             <div><p className="label">Depart</p><p className="font-medium">{fmtShort(r.checkOut)}</p><p className="text-xs text-muted">{r.nights} nights</p></div>
             <div><p className="label">Party</p><p className="font-medium">{r.adults} adult{r.adults === 1 ? "" : "s"}{r.children ? `, ${r.children} child${r.children === 1 ? "" : "ren"}` : ""}</p><p className="text-xs text-muted">{r.rigType}{r.rigLengthFt ? ` · ${r.rigLengthFt} ft` : ""}</p></div>
@@ -59,7 +59,7 @@ export default async function ReservationPage({ params, searchParams }: { params
                 <div><label className="label" htmlFor="checkOut">Depart</label><input className="input" type="date" id="checkOut" name="checkOut" defaultValue={toStr(r.checkOut)} required /></div>
                 <div><label className="label" htmlFor="siteId">Site</label>
                   <select className="input" id="siteId" name="siteId" defaultValue={r.siteId}>
-                    {sites.map((x) => <option key={x.id} value={x.id}>{x.name} · {x.lengthFt} ft · {x.siteClass.name}</option>)}
+                    {sites.map((x) => <option key={x.id} value={x.id}>{x.name} · {x.siteClass.name}{x.lengthFt ? ` · ${x.lengthFt} ft` : ""}</option>)}
                   </select>
                 </div>
                 <button className="btn">Save changes</button>

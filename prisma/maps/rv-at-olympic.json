@@ -1,0 +1,738 @@
+{
+ "siteTypes": [
+  {
+   "key": "partial",
+   "name": "Partial Hook Up",
+   "color": "#775C50",
+   "hookups": "Partial",
+   "amps": 50,
+   "accessType": "BACK_IN"
+  },
+  {
+   "key": "standard",
+   "name": "Standard Back-In",
+   "color": "#28461F",
+   "hookups": "Full",
+   "amps": 50,
+   "accessType": "BACK_IN"
+  },
+  {
+   "key": "plus",
+   "name": "Standard + Back-In",
+   "color": "#68964A",
+   "hookups": "Full",
+   "amps": 50,
+   "accessType": "BACK_IN"
+  },
+  {
+   "key": "comfort",
+   "name": "Comfort Back-In",
+   "color": "#B85A22",
+   "hookups": "Full",
+   "amps": 50,
+   "accessType": "BACK_IN"
+  },
+  {
+   "key": "rental",
+   "name": "Private RV Rentals",
+   "color": "#F06470",
+   "hookups": "Full",
+   "amps": 50,
+   "accessType": "BACK_IN"
+  }
+ ],
+ "sites": [
+  {
+   "name": "1",
+   "type": "standard",
+   "x": 43.51,
+   "y": 85.84,
+   "accessible": true
+  },
+  {
+   "name": "2",
+   "type": "standard",
+   "x": 40.57,
+   "y": 85.2,
+   "accessible": false
+  },
+  {
+   "name": "3",
+   "type": "standard",
+   "x": 37.58,
+   "y": 84.66,
+   "accessible": false
+  },
+  {
+   "name": "4",
+   "type": "standard",
+   "x": 34.6,
+   "y": 84.08,
+   "accessible": false
+  },
+  {
+   "name": "5",
+   "type": "standard",
+   "x": 31.63,
+   "y": 83.56,
+   "accessible": false
+  },
+  {
+   "name": "6",
+   "type": "standard",
+   "x": 28.68,
+   "y": 82.94,
+   "accessible": false
+  },
+  {
+   "name": "7",
+   "type": "standard",
+   "x": 25.61,
+   "y": 82.39,
+   "accessible": false
+  },
+  {
+   "name": "8",
+   "type": "rental",
+   "x": 22.72,
+   "y": 81.76,
+   "accessible": false
+  },
+  {
+   "name": "9",
+   "type": "rental",
+   "x": 19.64,
+   "y": 80.68,
+   "accessible": false
+  },
+  {
+   "name": "10",
+   "type": "rental",
+   "x": 17.02,
+   "y": 77.55,
+   "accessible": false
+  },
+  {
+   "name": "11",
+   "type": "standard",
+   "x": 15.4,
+   "y": 73.33,
+   "accessible": false
+  },
+  {
+   "name": "12",
+   "type": "standard",
+   "x": 15.26,
+   "y": 68.77,
+   "accessible": false
+  },
+  {
+   "name": "13",
+   "type": "standard",
+   "x": 15.42,
+   "y": 64.86,
+   "accessible": false
+  },
+  {
+   "name": "14",
+   "type": "standard",
+   "x": 15.53,
+   "y": 60.97,
+   "accessible": false
+  },
+  {
+   "name": "15",
+   "type": "standard",
+   "x": 15.56,
+   "y": 57.05,
+   "accessible": false
+  },
+  {
+   "name": "16",
+   "type": "standard",
+   "x": 15.7,
+   "y": 53.12,
+   "accessible": false
+  },
+  {
+   "name": "17",
+   "type": "standard",
+   "x": 15.72,
+   "y": 49.19,
+   "accessible": false
+  },
+  {
+   "name": "18",
+   "type": "standard",
+   "x": 15.9,
+   "y": 45.32,
+   "accessible": false
+  },
+  {
+   "name": "19",
+   "type": "standard",
+   "x": 15.99,
+   "y": 41.4,
+   "accessible": false
+  },
+  {
+   "name": "20",
+   "type": "standard",
+   "x": 16.15,
+   "y": 37.46,
+   "accessible": false
+  },
+  {
+   "name": "21",
+   "type": "standard",
+   "x": 16.11,
+   "y": 33.53,
+   "accessible": false
+  },
+  {
+   "name": "22",
+   "type": "standard",
+   "x": 16.25,
+   "y": 29.68,
+   "accessible": false
+  },
+  {
+   "name": "23",
+   "type": "standard",
+   "x": 16.38,
+   "y": 25.75,
+   "accessible": false
+  },
+  {
+   "name": "26",
+   "type": "partial",
+   "x": 44.74,
+   "y": 13.55,
+   "accessible": false
+  },
+  {
+   "name": "27",
+   "type": "partial",
+   "x": 47.9,
+   "y": 13.62,
+   "accessible": false
+  },
+  {
+   "name": "28",
+   "type": "partial",
+   "x": 51.13,
+   "y": 13.55,
+   "accessible": false
+  },
+  {
+   "name": "29",
+   "type": "partial",
+   "x": 54.32,
+   "y": 13.57,
+   "accessible": false
+  },
+  {
+   "name": "30",
+   "type": "comfort",
+   "x": 60.18,
+   "y": 14.11,
+   "accessible": false
+  },
+  {
+   "name": "31",
+   "type": "comfort",
+   "x": 63.45,
+   "y": 14.6,
+   "accessible": false
+  },
+  {
+   "name": "32",
+   "type": "comfort",
+   "x": 66.12,
+   "y": 19.21,
+   "accessible": false
+  },
+  {
+   "name": "33",
+   "type": "comfort",
+   "x": 67.84,
+   "y": 22.74,
+   "accessible": false
+  },
+  {
+   "name": "34",
+   "type": "comfort",
+   "x": 69.59,
+   "y": 26.16,
+   "accessible": false
+  },
+  {
+   "name": "35",
+   "type": "comfort",
+   "x": 71.3,
+   "y": 29.74,
+   "accessible": false
+  },
+  {
+   "name": "36",
+   "type": "comfort",
+   "x": 72.8,
+   "y": 34.68,
+   "accessible": false
+  },
+  {
+   "name": "37",
+   "type": "comfort",
+   "x": 73.36,
+   "y": 39.6,
+   "accessible": false
+  },
+  {
+   "name": "38",
+   "type": "comfort",
+   "x": 73.37,
+   "y": 44.71,
+   "accessible": false
+  },
+  {
+   "name": "39",
+   "type": "comfort",
+   "x": 72.5,
+   "y": 49.61,
+   "accessible": false
+  },
+  {
+   "name": "40",
+   "type": "comfort",
+   "x": 70.89,
+   "y": 54.12,
+   "accessible": false
+  },
+  {
+   "name": "41",
+   "type": "comfort",
+   "x": 68.63,
+   "y": 57.93,
+   "accessible": false
+  },
+  {
+   "name": "42",
+   "type": "comfort",
+   "x": 65.85,
+   "y": 61.14,
+   "accessible": false
+  },
+  {
+   "name": "43",
+   "type": "comfort",
+   "x": 62.61,
+   "y": 63.32,
+   "accessible": false
+  },
+  {
+   "name": "44",
+   "type": "comfort",
+   "x": 59.21,
+   "y": 64.54,
+   "accessible": false
+  },
+  {
+   "name": "45",
+   "type": "comfort",
+   "x": 55.16,
+   "y": 64.58,
+   "accessible": true
+  },
+  {
+   "name": "46",
+   "type": "comfort",
+   "x": 56.42,
+   "y": 53.56,
+   "accessible": false
+  },
+  {
+   "name": "47",
+   "type": "comfort",
+   "x": 59.41,
+   "y": 52.93,
+   "accessible": false
+  },
+  {
+   "name": "48",
+   "type": "comfort",
+   "x": 62.13,
+   "y": 51.12,
+   "accessible": false
+  },
+  {
+   "name": "49",
+   "type": "comfort",
+   "x": 64.24,
+   "y": 48.03,
+   "accessible": false
+  },
+  {
+   "name": "50",
+   "type": "comfort",
+   "x": 65.37,
+   "y": 44.03,
+   "accessible": false
+  },
+  {
+   "name": "51",
+   "type": "comfort",
+   "x": 65.33,
+   "y": 39.8,
+   "accessible": false
+  },
+  {
+   "name": "52",
+   "type": "comfort",
+   "x": 64.38,
+   "y": 35.69,
+   "accessible": false
+  },
+  {
+   "name": "53",
+   "type": "comfort",
+   "x": 62.88,
+   "y": 32.41,
+   "accessible": false
+  },
+  {
+   "name": "54",
+   "type": "comfort",
+   "x": 61.31,
+   "y": 29.17,
+   "accessible": false
+  },
+  {
+   "name": "55",
+   "type": "comfort",
+   "x": 59.44,
+   "y": 26.22,
+   "accessible": false
+  },
+  {
+   "name": "56",
+   "type": "comfort",
+   "x": 54.52,
+   "y": 28.06,
+   "accessible": false
+  },
+  {
+   "name": "57",
+   "type": "comfort",
+   "x": 53.84,
+   "y": 33.92,
+   "accessible": false
+  },
+  {
+   "name": "58",
+   "type": "comfort",
+   "x": 53.87,
+   "y": 38.92,
+   "accessible": false
+  },
+  {
+   "name": "59",
+   "type": "comfort",
+   "x": 53.77,
+   "y": 43.75,
+   "accessible": false
+  },
+  {
+   "name": "60",
+   "type": "comfort",
+   "x": 53.57,
+   "y": 48.66,
+   "accessible": false
+  },
+  {
+   "name": "61",
+   "type": "comfort",
+   "x": 53.39,
+   "y": 53.4,
+   "accessible": false
+  },
+  {
+   "name": "62",
+   "type": "plus",
+   "x": 43.45,
+   "y": 70.01,
+   "accessible": true
+  },
+  {
+   "name": "63",
+   "type": "plus",
+   "x": 43.49,
+   "y": 65.05,
+   "accessible": false
+  },
+  {
+   "name": "64",
+   "type": "plus",
+   "x": 43.61,
+   "y": 60.18,
+   "accessible": false
+  },
+  {
+   "name": "65",
+   "type": "plus",
+   "x": 43.74,
+   "y": 55.3,
+   "accessible": false
+  },
+  {
+   "name": "66",
+   "type": "plus",
+   "x": 43.94,
+   "y": 50.36,
+   "accessible": false
+  },
+  {
+   "name": "67",
+   "type": "plus",
+   "x": 43.91,
+   "y": 45.47,
+   "accessible": false
+  },
+  {
+   "name": "68",
+   "type": "partial",
+   "x": 44.02,
+   "y": 38.65,
+   "accessible": false
+  },
+  {
+   "name": "69",
+   "type": "partial",
+   "x": 44.03,
+   "y": 34.2,
+   "accessible": false
+  },
+  {
+   "name": "70",
+   "type": "partial",
+   "x": 44.03,
+   "y": 29.81,
+   "accessible": false
+  },
+  {
+   "name": "71",
+   "type": "partial",
+   "x": 43.91,
+   "y": 25.31,
+   "accessible": false
+  },
+  {
+   "name": "72",
+   "type": "comfort",
+   "x": 39.33,
+   "y": 30.68,
+   "accessible": false
+  },
+  {
+   "name": "73",
+   "type": "comfort",
+   "x": 39.13,
+   "y": 35.61,
+   "accessible": false
+  },
+  {
+   "name": "74",
+   "type": "comfort",
+   "x": 39.07,
+   "y": 40.47,
+   "accessible": false
+  },
+  {
+   "name": "75",
+   "type": "comfort",
+   "x": 38.89,
+   "y": 45.39,
+   "accessible": false
+  },
+  {
+   "name": "76",
+   "type": "comfort",
+   "x": 38.89,
+   "y": 50.14,
+   "accessible": false
+  },
+  {
+   "name": "77",
+   "type": "comfort",
+   "x": 38.77,
+   "y": 54.88,
+   "accessible": false
+  },
+  {
+   "name": "78",
+   "type": "comfort",
+   "x": 38.7,
+   "y": 59.95,
+   "accessible": false
+  },
+  {
+   "name": "79",
+   "type": "comfort",
+   "x": 38.56,
+   "y": 64.82,
+   "accessible": false
+  },
+  {
+   "name": "80",
+   "type": "comfort",
+   "x": 38.42,
+   "y": 69.74,
+   "accessible": false
+  },
+  {
+   "name": "81",
+   "type": "comfort",
+   "x": 39.27,
+   "y": 73.9,
+   "accessible": false
+  },
+  {
+   "name": "82",
+   "type": "plus",
+   "x": 28.55,
+   "y": 72.95,
+   "accessible": false
+  },
+  {
+   "name": "83",
+   "type": "plus",
+   "x": 28.64,
+   "y": 68.06,
+   "accessible": false
+  },
+  {
+   "name": "84",
+   "type": "plus",
+   "x": 28.74,
+   "y": 63.14,
+   "accessible": false
+  },
+  {
+   "name": "85",
+   "type": "plus",
+   "x": 28.82,
+   "y": 58.23,
+   "accessible": false
+  },
+  {
+   "name": "86",
+   "type": "plus",
+   "x": 28.89,
+   "y": 53.38,
+   "accessible": false
+  },
+  {
+   "name": "87",
+   "type": "plus",
+   "x": 29.03,
+   "y": 48.49,
+   "accessible": false
+  },
+  {
+   "name": "88",
+   "type": "plus",
+   "x": 29.18,
+   "y": 43.67,
+   "accessible": false
+  },
+  {
+   "name": "89",
+   "type": "plus",
+   "x": 29.31,
+   "y": 38.72,
+   "accessible": false
+  },
+  {
+   "name": "90",
+   "type": "plus",
+   "x": 29.47,
+   "y": 33.91,
+   "accessible": false
+  },
+  {
+   "name": "91",
+   "type": "plus",
+   "x": 29.51,
+   "y": 28.92,
+   "accessible": false
+  },
+  {
+   "name": "92",
+   "type": "plus",
+   "x": 24.61,
+   "y": 28.77,
+   "accessible": false
+  },
+  {
+   "name": "93",
+   "type": "plus",
+   "x": 24.43,
+   "y": 33.6,
+   "accessible": false
+  },
+  {
+   "name": "94",
+   "type": "plus",
+   "x": 24.37,
+   "y": 38.51,
+   "accessible": false
+  },
+  {
+   "name": "95",
+   "type": "plus",
+   "x": 24.23,
+   "y": 43.37,
+   "accessible": false
+  },
+  {
+   "name": "96",
+   "type": "plus",
+   "x": 24.1,
+   "y": 48.26,
+   "accessible": false
+  },
+  {
+   "name": "97",
+   "type": "plus",
+   "x": 23.97,
+   "y": 53.02,
+   "accessible": false
+  },
+  {
+   "name": "98",
+   "type": "plus",
+   "x": 23.85,
+   "y": 57.97,
+   "accessible": false
+  },
+  {
+   "name": "99",
+   "type": "plus",
+   "x": 23.72,
+   "y": 62.77,
+   "accessible": false
+  },
+  {
+   "name": "100",
+   "type": "plus",
+   "x": 23.44,
+   "y": 67.41,
+   "accessible": true
+  }
+ ],
+ "notes": [
+  "Site numbers 24 and 25 do not appear on the map.",
+  "Sites 8, 9 and 10 are labelled \"Private RV Rentals\" and are not in the colour key. They are imported as their own type and left not bookable.",
+  "Sites 1, 45, 62 and 100 are marked with the wheelchair symbol.",
+  "The key lists every site type as 50/30 amp. The map does not show site lengths."
+ ]
+}

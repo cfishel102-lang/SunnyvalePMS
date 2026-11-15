@@ -49,6 +49,9 @@ model Property {
   dynamicPricing    Boolean      @default(true)
   // Free cancellation up to this many days before arrival.
   cancelWindowDays  Int          @default(3)
+  // Logo files for this property's booking pages: { logo, logoOnDark, mark }.
+  brand             Json?
+  map               PropertyMap?
   createdAt         DateTime     @default(now())
   siteClasses       SiteClass[]
   sites             Site[]
@@ -71,6 +74,8 @@ model SiteClass {
   minRate     Decimal  @db.Decimal(10, 2)
   maxRate     Decimal  @db.Decimal(10, 2)
   sortOrder   Int      @default(0)
+  // Colour used for this type on the park map.
+  color       String   @default("#636F56")
   sites       Site[]
 }
 
@@ -86,7 +91,9 @@ model Site {
   siteClassId    String
   siteClass      SiteClass     @relation(fields: [siteClassId], references: [id])
   name           String
-  lengthFt       Int
+  // Null means the length has not been entered yet.
+  lengthFt       Int?
+  accessible     Boolean       @default(false)
   accessType     AccessType
   amps           Int           @default(50)
   hookups        String        @default("Full")
@@ -225,4 +232,18 @@ model Channel {
   lastSyncNote  String    @default("")
 
   @@unique([propertyId, source])
+}
+
+// The uploaded park map and what was read from it. Setting up a property starts here:
+// upload the map, review the sites it found, then import them.
+model PropertyMap {
+  id         String    @id @default(cuid())
+  propertyId String    @unique
+  property   Property  @relation(fields: [propertyId], references: [id])
+  mime       String
+  data       Bytes
+  // Site types and sites read from the map (see src/lib/mapImport.ts).
+  analysis   Json?
+  appliedAt  DateTime?
+  createdAt  DateTime  @default(now())
 }

@@ -38,12 +38,12 @@ export default async function Checkout({ params, searchParams }: { params: Promi
               {["Class A", "Class B / van", "Class C", "Fifth wheel", "Travel trailer", "Truck camper", "Other"].map((t) => <option key={t}>{t}</option>)}
             </select>
           </div>
-          <div><label className="label" htmlFor="rigLengthFt">RV length (ft)</label><input className="input" id="rigLengthFt" name="rigLengthFt" type="number" min={1} max={site.lengthFt} required defaultValue={sp.rig || ""} /></div>
+          <div><label className="label" htmlFor="rigLengthFt">RV length (ft)</label><input className="input" id="rigLengthFt" name="rigLengthFt" type="number" min={1} max={site.lengthFt ?? 100} required defaultValue={sp.rig || ""} /></div>
           <div><label className="label" htmlFor="adults">Adults</label><input className="input" id="adults" name="adults" type="number" min={1} max={10} defaultValue={2} /></div>
           <div><label className="label" htmlFor="children">Children</label><input className="input" id="children" name="children" type="number" min={0} max={10} defaultValue={0} /></div>
           <div className="col-span-2"><label className="label" htmlFor="notes">Anything we should know? (optional)</label><textarea className="input" id="notes" name="notes" rows={2} /></div>
         </div>
-        <button className="btn btn-primary btn-lg mt-6 w-full">{paymentsLive ? `Continue to payment · ${money(quote.total)}` : `Confirm reservation · ${money(quote.total)}`}</button>
+        <button className="btn btn-cta btn-lg mt-6 w-full">{paymentsLive ? `Continue to payment · ${money(quote.total)}` : `Confirm reservation · ${money(quote.total)}`}</button>
         <p className="mt-3 text-center text-xs text-muted">
           {paymentsLive ? "You'll pay securely by card on the next screen." : "Demo mode: no card is charged."} Free cancellation up to {property.cancelWindowDays} days before arrival.
         </p>
@@ -52,7 +52,7 @@ export default async function Checkout({ params, searchParams }: { params: Promi
       <aside className="card h-fit p-5 text-sm">
         <h2 className="h2">Site {site.name}</h2>
         <p className="text-muted">{site.siteClass.name}</p>
-        <p className="mt-1 text-muted">{ACCESS_LABEL[site.accessType]} · {site.lengthFt} ft · {site.amps} amp</p>
+        <p className="mt-1 text-muted">{ACCESS_LABEL[site.accessType]}{site.lengthFt ? ` · ${site.lengthFt} ft` : ""} · {site.hookups} hookups · {site.amps} amp{site.accessible ? " · Accessible" : ""}</p>
         <dl className="mt-4 space-y-1 border-t border-line pt-4">
           <div className="flex justify-between"><dt className="text-muted">Arrive</dt><dd>{fmtShort(checkIn)}</dd></div>
           <div className="flex justify-between"><dt className="text-muted">Depart</dt><dd>{fmtShort(checkOut)}</dd></div>

@@ -48,7 +48,7 @@ export default async function NewReservation({ searchParams }: { searchParams: P
                     <label key={x.id} className="cursor-pointer">
                       <input type="radio" name="siteId" value={x.id} defaultChecked={x.id === preferred} required className="peer sr-only" />
                       <span className="block rounded-lg border border-line px-2.5 py-1 text-sm tabular-nums peer-checked:border-pine peer-checked:bg-pine peer-checked:text-white hover:border-pine">
-                        {x.name} <span className="text-[10px] opacity-70">{x.lengthFt}ft</span>
+                        {x.name}{x.lengthFt ? <span className="text-[10px] opacity-70"> {x.lengthFt}ft</span> : null}
                       </span>
                     </label>
                   ))}

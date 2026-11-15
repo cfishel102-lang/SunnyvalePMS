@@ -24,4 +24,6 @@ export const STATUS_LABEL: Record<string, string> = {
   CANCELLED: "Cancelled",
 };
 export const ACCESS_LABEL: Record<string, string> = { BACK_IN: "Back-in", PULL_THROUGH: "Pull-through" };
+/** "55 ft", or nothing when the length has not been entered. */
+export const ft = (n: number | null | undefined, sep = " ") => (n ? `${n}${sep}ft` : "");
 export const round2 = (n: number) => Math.round(n * 100) / 100;

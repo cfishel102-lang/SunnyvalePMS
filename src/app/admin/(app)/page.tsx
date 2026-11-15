@@ -72,8 +72,8 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">
         <div className="card p-4">
           <h2 className="h2">Occupancy, next 30 nights</h2>
-          <p className="mb-4 text-xs text-muted">Amber nights are 75% full or more, where dynamic pricing is lifting rates.</p>
-          <Bars max={1} format={(n) => pct(n)} data={forward.rows.map((r) => ({ label: r.label, value: r.occupancy, tone: r.occupancy >= 0.75 ? "bg-amber" : "bg-pine" }))} />
+          <p className="mb-4 text-xs text-muted">Rust-coloured nights are 75% full or more, where dynamic pricing is lifting rates.</p>
+          <Bars max={1} format={(n) => pct(n)} data={forward.rows.map((r) => ({ label: r.label, value: r.occupancy, tone: r.occupancy >= 0.75 ? "bg-dusk" : "bg-pine" }))} />
         </div>
         <div className="card p-4">
           <h2 className="h2">Where bookings came from</h2>

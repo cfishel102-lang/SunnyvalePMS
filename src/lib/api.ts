@@ -74,7 +74,7 @@ export const OPERATIONS = {
       const p = await property(orgId, a);
       const sites = await db.site.findMany({ where: { propertyId: p.id }, include: { siteClass: true } });
       return sites.sort((x, y) => x.name.localeCompare(y.name, undefined, { numeric: true })).map((s) => ({
-        id: s.id, name: s.name, site_type: s.siteClass.name, length_ft: s.lengthFt, access: s.accessType, amps: s.amps, hookups: s.hookups,
+        id: s.id, name: s.name, site_type: s.siteClass.name, length_ft: s.lengthFt, accessible: s.accessible, access: s.accessType, amps: s.amps, hookups: s.hookups,
         short_term: s.allowShortTerm, long_term: s.allowLongTerm, bookable: s.active,
       }));
     },

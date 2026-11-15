@@ -108,7 +108,7 @@ export default async function Pricing({ searchParams }: { searchParams: Promise<
 
       <div className="card overflow-x-auto p-5">
         <h2 className="h2">What guests will pay: next 14 nights</h2>
-        <p className="mb-3 text-xs text-muted">Price for a one-night stay booked right now. Hover a price to see why. Amber means a rule moved it off the base rate.</p>
+        <p className="mb-3 text-xs text-muted">Price for a one-night stay booked right now. Hover a price to see why. Rust means a rule moved it off the base rate.</p>
         <table className="w-full text-center text-xs tabular-nums">
           <thead>
             <tr><th className="th">Night</th>{preview[0]?.nights.map((x) => <th key={x.date} className="px-1 py-1 font-medium text-muted">{fmtDate(x.date, { weekday: "short" })}<br />{fmtDate(x.date, { month: "numeric", day: "numeric" })}</th>)}</tr>
@@ -119,7 +119,7 @@ export default async function Pricing({ searchParams }: { searchParams: Promise<
               <tr key={c.id}>
                 <td className="td text-left text-sm whitespace-nowrap">{c.name}</td>
                 {nights.map((x) => (
-                  <td key={x.date} title={x.notes.join(", ") || "Base rate"} className={`border-t border-line px-1 py-2 ${x.rate !== x.base ? "font-semibold text-amber" : ""}`}>{money(x.rate, false)}</td>
+                  <td key={x.date} title={x.notes.join(", ") || "Base rate"} className={`border-t border-line px-1 py-2 ${x.rate !== x.base ? "font-semibold text-dusk" : ""}`}>{money(x.rate, false)}</td>
                 ))}
               </tr>
             ))}

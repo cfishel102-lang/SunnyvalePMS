@@ -20,7 +20,7 @@ export default async function Confirmation({ params, searchParams }: { params: P
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-pine-soft text-2xl text-pine">✓</div>
         <h1 className="h1 mt-4">You're booked, {r.guest.firstName}.</h1>
         <p className="mt-1 text-muted">Confirmation code</p>
-        <p className="text-3xl font-semibold tracking-widest">{r.code}</p>
+        <p className="font-heading text-3xl font-medium tracking-widest">{r.code}</p>
         <dl className="mt-6 space-y-2 border-t border-line pt-6 text-left text-sm">
           <div className="flex justify-between"><dt className="text-muted">Site</dt><dd>{r.site.name}</dd></div>
           <div className="flex justify-between"><dt className="text-muted">Arrive</dt><dd>{fmtShort(r.checkIn)}, from {r.property.checkInTime}</dd></div>

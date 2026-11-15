@@ -71,7 +71,7 @@ export default async function Calendar({ searchParams }: { searchParams: Promise
                 <div key={site.id} className="flex border-b border-line last:border-b-0">
                   <div className="flex w-24 shrink-0 items-baseline gap-1.5 px-3 py-2 text-sm">
                     <span className="font-semibold tabular-nums">{site.name}</span>
-                    <span className="text-[10px] text-muted">{site.lengthFt}ft {site.accessType === "PULL_THROUGH" ? "PT" : "BI"}</span>
+                    <span className="text-[10px] text-muted">{site.lengthFt ? `${site.lengthFt}ft ` : ""}{site.accessType === "PULL_THROUGH" ? "PT" : "BI"}</span>
                   </div>
                   <div className="grid flex-1" style={cols}>
                     {days.map((d, i) => (

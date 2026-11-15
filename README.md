@@ -13,7 +13,13 @@ Cloud reservation software for RV parks and campgrounds. First property: **RV at
 
 Sample staff login: `owner@example.com` / `campground`. **Change this before real use.**
 
-All sites, rates, tax rate and reservations are placeholder sample data (`prisma/seed.ts`).
+The site list comes from the real park map (`prisma/maps`). Rates, tax rate and reservations are placeholder sample data (`prisma/seed.ts`). Site lengths are not entered yet.
+
+## Setting up a new property
+
+The first step is always the map: **Map → upload**. The system reads the colour key and the site numbers and proposes the site types and sites. You check the markers, enter rates, and import. Automatic reading needs `ANTHROPIC_API_KEY` in `.env`.
+
+Colours, fonts and logo follow the RV@Olympic brand guidelines (`src/app/globals.css`, `public/brand`).
 
 ## Running it
 
@@ -35,6 +41,7 @@ Payments run in demo mode (no real charges) until `STRIPE_SECRET_KEY` is set in 
 - `src/lib/pricing.ts`: availability and pricing, including dynamic pricing.
 - `src/lib/reservations.ts`: create, change, cancel.
 - `src/lib/payments.ts`: Stripe checkout and refunds.
+- `src/lib/mapImport.ts`: reading a park map and creating sites from it.
 - `src/lib/reports.ts`: occupancy, revenue, ADR, RevPAR.
 - `src/lib/api.ts`: the operations shared by the REST API and the MCP server.
 - `src/app/book`: guest pages. `src/app/admin`: staff pages.
@@ -43,6 +50,6 @@ The database itself blocks two active reservations on the same site for overlapp
 
 ## Not built yet
 
-Stripe live-mode testing and webhook, confirmation emails, map upload, Expedia / Booking.com / Airbnb
+Stripe live-mode testing and webhook, confirmation emails, dragging map markers to correct them, per-property brand colours, Expedia / Booking.com / Airbnb
 connections, Google Analytics and Ads, saved custom reports, multiple staff users and roles,
 monthly billing for long-term guests (currently one total per reservation), a property switcher.

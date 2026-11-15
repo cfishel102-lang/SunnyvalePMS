@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { addDays, fmtShort, isDateStr, nightsBetween, today } from "@/lib/dates";
+import { SiteMap, type Pin } from "@/components/SiteMap";
 import { ACCESS_LABEL, money } from "@/lib/format";
 import { searchAvailability } from "@/lib/pricing";
 
@@ -23,9 +24,24 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const results = searched ? await searchAvailability(property.id, checkIn, checkOut, { rigLengthFt: rig, accessType: access }) : [];
   const nights = searched ? nightsBetween(checkIn, checkOut) : 0;
 
+  // Park map: open sites in their type colour and clickable, everything else faded.
+  let pins: Pin[] = [];
+  const map = searched ? await db.propertyMap.findFirst({ where: { propertyId: property.id, appliedAt: { not: null } }, select: { createdAt: true } }) : null;
+  if (map) {
+    const all = await db.site.findMany({ where: { propertyId: property.id, mapX: { not: null } } });
+    const open = new Map(results.flatMap((c) => c.sites.map((x) => [x.id, c] as const)));
+    pins = all.map((x) => {
+      const c = open.get(x.id);
+      return c
+        ? { name: x.name, x: x.mapX!, y: x.mapY!, color: c.siteClass.color, title: `Site ${x.name} · ${c.siteClass.name} · ${money(c.quote.total)} total`, href: `/book/${slug}/checkout?site=${x.id}&checkIn=${checkIn}&checkOut=${checkOut}&rig=${rig || ""}` }
+        : { name: x.name, x: x.mapX!, y: x.mapY!, color: "#8f9186", dim: true, title: `Site ${x.name} is not available` };
+    });
+  }
+
   return (
     <>
-      <h1 className="text-3xl font-semibold tracking-tight">Book your stay</h1>
+      <p className="font-label text-xs tracking-widest text-dusk uppercase">Reserve your stay</p>
+      <h1 className="font-heading text-4xl font-medium">Adventure awaits.</h1>
       <p className="mt-1 text-muted">{property.tagline}</p>
 
       <form className="card mt-6 grid grid-cols-2 gap-3 p-4 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] sm:items-end">
@@ -49,7 +65,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
             <option value="BACK_IN">Back-in</option>
           </select>
         </div>
-        <button className="btn btn-primary col-span-2 sm:col-span-1">Check availability</button>
+        <button className="btn btn-cta col-span-2 sm:col-span-1">Check availability</button>
       </form>
 
       {problem && <p className="mt-4 rounded-lg bg-danger-soft px-4 py-3 text-sm text-danger">{problem}</p>}
@@ -66,38 +82,46 @@ export default async function BookPage({ params, searchParams }: { params: Promi
               <p className="mt-1 text-sm text-muted">Try different dates or a shorter stay.</p>
             </div>
           )}
-          <div className="mt-3 space-y-3">
+          {pins.length > 0 && results.length > 0 && (
+            <div className="mt-3">
+              <p className="mb-2 text-sm"><b>Pick your site on the map</b> <span className="text-muted">or choose from the list below. Faded sites are taken.</span></p>
+              <div className="overflow-x-auto"><div className="min-w-[46rem]"><SiteMap src={`/api/map/${slug}?v=${map!.createdAt.getTime()}`} alt={`Map of ${property.name}`} pins={pins} /></div></div>
+            </div>
+          )}
+          <div className="mt-4 space-y-3">
             {results.map(({ siteClass: c, sites, quote }) => {
-              const lens = sites.map((x) => x.lengthFt);
+              const lens = sites.flatMap((x) => (x.lengthFt ? [x.lengthFt] : []));
               return (
                 <form key={c.id} action={`/book/${slug}/checkout`} className="card p-5 sm:flex sm:items-center sm:gap-6">
                   <input type="hidden" name="checkIn" value={checkIn} />
                   <input type="hidden" name="checkOut" value={checkOut} />
                   <input type="hidden" name="rig" value={rig || ""} />
                   <div className="flex-1">
-                    <h2 className="text-lg font-semibold">{c.name}</h2>
+                    <h2 className="flex items-center gap-2 font-heading text-xl font-medium"><i className="h-3.5 w-3.5 rounded-full" style={{ background: c.color }} />{c.name}</h2>
                     <p className="mt-0.5 text-sm text-muted">{c.description}</p>
                     <p className="mt-2 flex flex-wrap gap-1.5 text-xs">
                       <span className="badge bg-pine-soft text-pine-dark">{ACCESS_LABEL[sites[0].accessType]}</span>
                       <span className="badge bg-paper text-muted">{sites[0].hookups} hookups</span>
                       <span className="badge bg-paper text-muted">{sites[0].amps} amp</span>
-                      <span className="badge bg-paper text-muted">Fits up to {Math.max(...lens)} ft</span>
+                      {lens.length > 0 && <span className="badge bg-paper text-muted">Fits up to {Math.max(...lens)} ft</span>}
+                      {sites.some((x) => x.accessible) && <span className="badge bg-paper text-muted">Accessible sites</span>}
+                      <span className="badge bg-paper text-muted">{sites.length} open</span>
                       {sites.length <= 3 && <span className="badge bg-amber-soft text-amber">Only {sites.length} left</span>}
                     </p>
                   </div>
                   <div className="mt-4 sm:mt-0 sm:w-56">
                     <p className="sm:text-right">
-                      <span className="text-2xl font-semibold tabular-nums">{money(quote.avgNightly, false)}</span>
+                      <span className="font-heading text-3xl font-medium tabular-nums">{money(quote.avgNightly, false)}</span>
                       <span className="text-sm text-muted"> / night</span>
                       <span className="block text-xs text-muted">{money(quote.total)} total with tax</span>
                     </p>
                     <div className="mt-2 flex gap-2">
                       <select name="site" className="input" aria-label="Choose a site">
                         {sites.map((x) => (
-                          <option key={x.id} value={x.id}>Site {x.name} · {x.lengthFt} ft</option>
+                          <option key={x.id} value={x.id}>Site {x.name}{x.lengthFt ? ` · ${x.lengthFt} ft` : ""}{x.accessible ? " · accessible" : ""}</option>
                         ))}
                       </select>
-                      <button className="btn btn-primary">Reserve</button>
+                      <button className="btn btn-cta">Reserve</button>
                     </div>
                   </div>
                 </form>

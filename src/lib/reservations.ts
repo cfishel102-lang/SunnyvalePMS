@@ -39,7 +39,7 @@ async function assertSiteFree(propertyId: string, siteId: string, checkIn: strin
   const free = await availableSites(propertyId, checkIn, checkOut, { excludeReservationId });
   const site = free.find((s) => s.id === siteId);
   if (!site) throw new BookingError("That site is no longer available for those dates. Please pick another site or dates.");
-  if (rigLengthFt && site.lengthFt < rigLengthFt) throw new BookingError(`Site ${site.name} fits rigs up to ${site.lengthFt} ft.`);
+  if (rigLengthFt && site.lengthFt && site.lengthFt < rigLengthFt) throw new BookingError(`Site ${site.name} fits rigs up to ${site.lengthFt} ft.`);
   return site;
 }
 
