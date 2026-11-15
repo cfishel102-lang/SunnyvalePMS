@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Montserrat, Nunito_Sans, Oswald } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 
-const body = Nunito_Sans({ variable: "--font-body", subsets: ["latin"] });
-const heading = Oswald({ variable: "--font-heading", subsets: ["latin"], weight: ["500"] });
-const label = Montserrat({ variable: "--font-label", subsets: ["latin"], weight: ["400", "500"] });
+// The built-in SunnyvalePMS font. A property's own brand fonts are loaded by its pages.
+const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Campground reservations",
+  title: "SunnyvalePMS",
   description: "Simple reservation software for RV parks and campgrounds.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${body.variable} ${heading.variable} ${label.variable} h-full antialiased`}>
+    <html lang="en" className={`${geist.variable} h-full antialiased`}>
       <body className="min-h-full">{children}</body>
     </html>
   );

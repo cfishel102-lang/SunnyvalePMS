@@ -41,7 +41,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   return (
     <>
       <p className="font-label text-xs tracking-widest text-dusk uppercase">Reserve your stay</p>
-      <h1 className="font-heading text-4xl font-medium">Adventure awaits.</h1>
+      <h1 className="font-heading text-4xl font-medium">{property.name}</h1>
       <p className="mt-1 text-muted">{property.tagline}</p>
 
       <form className="card mt-6 grid grid-cols-2 gap-3 p-4 sm:grid-cols-[1fr_1fr_1fr_1fr_auto] sm:items-end">

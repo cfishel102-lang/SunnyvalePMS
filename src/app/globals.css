@@ -1,31 +1,54 @@
 @import "tailwindcss";
 
-/* Brand: RV@Olympic guidelines. Olive #636F56, rust #A36334, sage #C0C5AA, yellow #E3D370.
-   Headings Oswald, small labels Montserrat, body Nunito Sans. */
+/* Theme. Every colour and font derives from the --brand-* variables below.
+   These defaults are the SunnyvalePMS look; a property's own brand overrides
+   them on the wrapper element of its pages (see src/lib/brand.ts). */
+:root {
+  --brand-primary: #1f4e5f;
+  --brand-accent: #c8642a;
+  --brand-tint: #c9d3d6;
+  --brand-highlight: #f2c94c;
+  --brand-on-primary: #ffffff;
+  --brand-on-accent: #ffffff;
+  --brand-font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --brand-font-label: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --brand-font-body: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 @theme inline {
-  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-heading), ui-sans-serif, sans-serif;
-  --font-label: var(--font-label), ui-sans-serif, sans-serif;
-  --color-paper: #f2f3ea;
+  --font-sans: var(--brand-font-body);
+  --font-heading: var(--brand-font-heading);
+  --font-label: var(--brand-font-label);
   --color-surface: #ffffff;
-  --color-ink: #262b20;
-  --color-muted: #5f6753;
-  --color-line: #dcdfcd;
-  --color-sage: #c0c5aa;
-  --color-sun: #e3d370;
-  --color-pine: #636f56;
-  --color-pine-dark: #4e5843;
-  --color-pine-soft: #e6e9d9;
-  --color-dusk: #a36334;
-  --color-dusk-dark: #8a522a;
-  --color-dusk-soft: #f4e6da;
-  --color-amber: #6f6212;
-  --color-amber-soft: #f6f0c9;
+  --color-paper: color-mix(in oklab, var(--brand-tint) 22%, white);
+  --color-line: color-mix(in oklab, var(--brand-tint) 55%, white);
+  --color-ink: color-mix(in oklab, var(--brand-primary) 22%, #15171a);
+  --color-muted: color-mix(in oklab, var(--brand-primary) 30%, #5b6068);
+  --color-sage: var(--brand-tint);
+  --color-sun: var(--brand-highlight);
+  /* "pine" = the brand's primary colour, "dusk" = its accent. */
+  --color-pine: var(--brand-primary);
+  --color-pine-dark: color-mix(in oklab, var(--brand-primary) 82%, black);
+  --color-pine-soft: color-mix(in oklab, var(--brand-primary) 13%, white);
+  --color-on-pine: var(--brand-on-primary);
+  --color-dusk: var(--brand-accent);
+  --color-dusk-dark: color-mix(in oklab, var(--brand-accent) 84%, black);
+  --color-dusk-soft: color-mix(in oklab, var(--brand-accent) 14%, white);
+  --color-on-dusk: var(--brand-on-accent);
+  --color-amber: color-mix(in oklab, var(--brand-highlight) 42%, black);
+  --color-amber-soft: color-mix(in oklab, var(--brand-highlight) 38%, white);
   --color-danger: #9c3b2e;
   --color-danger-soft: #f8e6e2;
 }
 
 body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* A themed area: pages for one property, wearing that property's brand. */
+.themed {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
@@ -40,12 +63,13 @@ body {
   }
   .input-sm { @apply rounded-md px-2 py-1; }
   .btn {
+    font-family: var(--font-sans);
     @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-line bg-surface px-3.5 py-2 text-sm font-medium text-ink transition;
     @apply hover:bg-paper focus-visible:ring-2 focus-visible:ring-pine/30 focus-visible:outline-none;
   }
-  .btn-primary { @apply border-pine bg-pine text-white hover:border-pine-dark hover:bg-pine-dark; }
+  .btn-primary { @apply border-pine bg-pine text-on-pine hover:border-pine-dark hover:bg-pine-dark; }
   /* The one action we most want a guest to take. */
-  .btn-cta { @apply border-dusk bg-dusk text-white hover:border-dusk-dark hover:bg-dusk-dark; }
+  .btn-cta { @apply border-dusk bg-dusk text-on-dusk hover:border-dusk-dark hover:bg-dusk-dark; }
   .btn-danger { @apply border-danger/30 text-danger hover:bg-danger-soft; }
   .btn-lg { @apply px-5 py-3 text-base; }
   .btn-sm { @apply rounded-md px-2.5 py-1 text-xs; }

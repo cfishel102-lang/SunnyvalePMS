@@ -86,13 +86,13 @@ export default async function Calendar({ searchParams }: { searchParams: Promise
                     {site.reservations.map((r) => {
                       const from = Math.max(0, nightsBetween(start, toStr(r.checkIn)));
                       const to = Math.min(DAYS, nightsBetween(start, toStr(r.checkOut)));
-                      const tone = r.stayType === "LONG_TERM" ? "bg-dusk" : "bg-pine";
+                      const tone = r.stayType === "LONG_TERM" ? "bg-dusk text-on-dusk" : "bg-pine text-on-pine";
                       return (
                         <Link
                           key={r.id}
                           href={`/admin/reservations/${r.id}`}
                           title={`${r.guest.firstName} ${r.guest.lastName} · ${fmtDate(r.checkIn)} to ${fmtDate(r.checkOut)}`}
-                          className={`z-10 my-1 ml-0.5 truncate rounded-md px-2 py-1 text-xs font-medium text-white hover:brightness-110 ${tone} ${r.status === "CHECKED_OUT" ? "opacity-50" : ""}`}
+                          className={`z-10 my-1 ml-0.5 truncate rounded-md px-2 py-1 text-xs font-medium hover:brightness-110 ${tone} ${r.status === "CHECKED_OUT" ? "opacity-50" : ""}`}
                           style={{ gridColumn: `${from + 1} / ${to + 1}`, gridRow: 1 }}
                         >
                           {r.guest.lastName}

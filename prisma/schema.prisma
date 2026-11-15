@@ -49,8 +49,9 @@ model Property {
   dynamicPricing    Boolean      @default(true)
   // Free cancellation up to this many days before arrival.
   cancelWindowDays  Int          @default(3)
-  // Logo files for this property's booking pages: { logo, logoOnDark, mark }.
+  // This property's look: { colors, fonts, logo, logoOnDark }. See src/lib/brand.ts.
   brand             Json?
+  brandAssets       BrandAsset[]
   map               PropertyMap?
   createdAt         DateTime     @default(now())
   siteClasses       SiteClass[]
@@ -246,4 +247,17 @@ model PropertyMap {
   analysis   Json?
   appliedAt  DateTime?
   createdAt  DateTime  @default(now())
+}
+
+// An uploaded brand file: a logo for light backgrounds ("logo") or dark ones ("logoOnDark").
+model BrandAsset {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  kind       String
+  mime       String
+  data       Bytes
+  updatedAt  DateTime @updatedAt
+
+  @@unique([propertyId, kind])
 }

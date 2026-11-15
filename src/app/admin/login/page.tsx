@@ -1,3 +1,4 @@
+import { PRODUCT } from "@/lib/brand";
 import { loginAction } from "../actions";
 
 export default async function Login({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
@@ -5,6 +6,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <form action={loginAction} className="card w-full max-w-sm p-7">
+        <p className="mb-2 flex items-center gap-2 text-xs font-semibold tracking-wide text-pine uppercase"><i className="h-2.5 w-2.5 rounded-full bg-sun" />{PRODUCT}</p>
         <h1 className="h1">Staff sign in</h1>
         {error && <p className="mt-4 rounded-lg bg-danger-soft px-4 py-3 text-sm text-danger">That email and password don't match.</p>}
         <div className="mt-5 space-y-4">

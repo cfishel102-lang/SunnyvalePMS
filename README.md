@@ -1,6 +1,6 @@
-# Campground reservations
+# SunnyvalePMS
 
-Cloud reservation software for RV parks and campgrounds. First property: **RV at Olympic**.
+Cloud reservation software for RV parks and campgrounds. Each property brings its own map, rates and brand. First property (beta tester): **RV at Olympic**.
 
 ## What is here
 
@@ -19,7 +19,9 @@ The site list comes from the real park map (`prisma/maps`). Rates, tax rate and 
 
 The first step is always the map: **Map → upload**. The system reads the colour key and the site numbers and proposes the site types and sites. You check the markers, enter rates, and import. Automatic reading needs `ANTHROPIC_API_KEY` in `.env`.
 
-Colours, fonts and logo follow the RV@Olympic brand guidelines (`src/app/globals.css`, `public/brand`).
+Then **Brand → upload the brand deck** (PDF). The colour codes and font names in it are suggested for review; logos are uploaded separately. The brand styles both the staff side and the guest booking pages. A property without a brand uses the SunnyvalePMS look.
+
+The Brand page also gives each property a booking link and a date-picker snippet to embed on its own website.
 
 ## Running it
 
@@ -52,6 +54,7 @@ Every later push to `main` redeploys automatically and never overwrites existing
 - `src/lib/reservations.ts`: create, change, cancel.
 - `src/lib/payments.ts`: Stripe checkout and refunds.
 - `src/lib/mapImport.ts`: reading a park map and creating sites from it.
+- `src/lib/brand.ts`: per-property colours, fonts and logo.
 - `src/lib/reports.ts`: occupancy, revenue, ADR, RevPAR.
 - `src/lib/api.ts`: the operations shared by the REST API and the MCP server.
 - `src/app/book`: guest pages. `src/app/admin`: staff pages.
@@ -60,6 +63,6 @@ The database itself blocks two active reservations on the same site for overlapp
 
 ## Not built yet
 
-Stripe live-mode testing and webhook, confirmation emails, dragging map markers to correct them, per-property brand colours, Expedia / Booking.com / Airbnb
+Stripe live-mode testing and webhook, confirmation emails, dragging map markers to correct them, custom domains per property, reading logos out of a brand deck, Expedia / Booking.com / Airbnb
 connections, Google Analytics and Ads, saved custom reports, multiple staff users and roles,
 monthly billing for long-term guests (currently one total per reservation), a property switcher.

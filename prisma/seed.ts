@@ -19,7 +19,7 @@ const RIGS = ["Class A", "Class C", "Fifth wheel", "Travel trailer", "Camper van
 const SOURCES = [..."WWWWWWWWWW".split("").map(() => "WEBSITE"), ...Array(5).fill("STAFF"), "EXPEDIA", "EXPEDIA", "BOOKING_COM", "BOOKING_COM", "AIRBNB", "API"] as const;
 
 async function main() {
-  for (const t of ["Payment", "Reservation", "Guest", "Channel", "PricingRule", "Season", "Site", "SiteClass", "PropertyMap", "Property", "ApiKey", "User", "Organization"]) {
+  for (const t of ["BrandAsset", "Payment", "Reservation", "Guest", "Channel", "PricingRule", "Season", "Site", "SiteClass", "PropertyMap", "Property", "ApiKey", "User", "Organization"]) {
     await db.$executeRawUnsafe(`DELETE FROM "${t}"`);
   }
 
@@ -38,7 +38,13 @@ async function main() {
       slug: "rv-at-olympic",
       tagline: "Full-hookup RV sites for a night, a week, or the season.",
       taxRatePct: 8.5,
-      brand: { logo: "/brand/rv-at-olympic-logo-olive.png", logoOnDark: "/brand/rv-at-olympic-logo-sage.png", mark: "/brand/rv-at-olympic-mark-olive.png" },
+      // From the RV@Olympic brand guidelines.
+      brand: {
+        colors: { primary: "#636F56", accent: "#A36334", tint: "#C0C5AA", highlight: "#E3D370" },
+        fonts: { heading: "Oswald", label: "Montserrat", body: "Nunito Sans" },
+        logo: "/brand/rv-at-olympic-logo-olive.png",
+        logoOnDark: "/brand/rv-at-olympic-logo-sage.png",
+      },
       weeklyDiscountPct: 10,
       weekendUpliftPct: 10,
       seasons: {
